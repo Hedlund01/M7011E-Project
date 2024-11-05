@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{18373447-B06B-495A-A4D0-60C621AEA375}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{E090864D-D6B5-436F-A2CB-AF461EFE2E2E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Identity.API", "Identity.API\Identity.API.csproj", "{1D7717D2-3E5E-45BC-8743-F46F73D68897}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OcelotGateway.API", "OcelotGateway.API\OcelotGateway.API.csproj", "{11165062-97FE-4013-B2EF-D39C2AA9F2DB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1D7717D2-3E5E-45BC-8743-F46F73D68897}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D7717D2-3E5E-45BC-8743-F46F73D68897}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D7717D2-3E5E-45BC-8743-F46F73D68897}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D7717D2-3E5E-45BC-8743-F46F73D68897}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11165062-97FE-4013-B2EF-D39C2AA9F2DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11165062-97FE-4013-B2EF-D39C2AA9F2DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11165062-97FE-4013-B2EF-D39C2AA9F2DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11165062-97FE-4013-B2EF-D39C2AA9F2DB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1D7717D2-3E5E-45BC-8743-F46F73D68897} = {E090864D-D6B5-436F-A2CB-AF461EFE2E2E}
+		{11165062-97FE-4013-B2EF-D39C2AA9F2DB} = {E090864D-D6B5-436F-A2CB-AF461EFE2E2E}
+	EndGlobalSection
+EndGlobal
