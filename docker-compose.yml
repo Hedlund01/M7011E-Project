@@ -1,0 +1,16 @@
+﻿services:
+  identity.api:
+    image: identity.api
+    ports:
+      - "5000:8080"
+    build:
+      context: .
+      dockerfile: Identity.API/Dockerfile
+
+  ocelotgateway.api:
+    image: ocelotgateway.api
+    ports:
+      - "8080:8080"
+    build:
+      context: .
+      dockerfile: OcelotGateway.API/Dockerfile

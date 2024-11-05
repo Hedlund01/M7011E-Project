@@ -1,0 +1,40 @@
+# This is a generated file. Not intended for manual editing.
+services:
+  identity.api:
+    build:
+      context: "C:\\Users\\hedlund01\\RiderProjects\\M7011E-Project"
+      dockerfile: "Identity.API/Dockerfile"
+      target: "base"
+    command: []
+    entrypoint:
+    - "dotnet"
+    - "/app/bin/Debug/net8.0/Identity.API.dll"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      DOTNET_USE_POLLING_FILE_WATCHER: "true"
+    image: "identity.api:dev"
+    ports: []
+    volumes:
+    - "C:\\Users\\hedlund01\\.nuget\\packages:/home/app/.nuget/packages"
+    - "C:\\Users\\hedlund01\\RiderProjects\\M7011E-Project\\Identity.API:/app:rw"
+    - "C:\\Users\\hedlund01\\RiderProjects\\M7011E-Project:/src:rw"
+    working_dir: "/app"
+  ocelotgateway.api:
+    build:
+      context: "C:\\Users\\hedlund01\\RiderProjects\\M7011E-Project"
+      dockerfile: "OcelotGateway.API/Dockerfile"
+      target: "base"
+    command: []
+    entrypoint:
+    - "dotnet"
+    - "/app/bin/Debug/net8.0/OcelotGateway.API.dll"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      DOTNET_USE_POLLING_FILE_WATCHER: "true"
+    image: "ocelotgateway.api:dev"
+    ports: []
+    volumes:
+    - "C:\\Users\\hedlund01\\.nuget\\packages:/home/app/.nuget/packages"
+    - "C:\\Users\\hedlund01\\RiderProjects\\M7011E-Project\\OcelotGateway.API:/app:rw"
+    - "C:\\Users\\hedlund01\\RiderProjects\\M7011E-Project:/src:rw"
+    working_dir: "/app"
