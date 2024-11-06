@@ -32,6 +32,8 @@ public class AuthController : ControllerBase
         if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password))
             return Unauthorized("Invalid login attempt."); 
         
+        
+        
         var accessToken = await _authService.GenerateJwtTokenAsync(user.Email!);
         var refreshToken = _authService.GenerateRefreshToken();
         

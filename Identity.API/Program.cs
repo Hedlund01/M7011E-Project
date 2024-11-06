@@ -26,7 +26,7 @@ builder.Services.AddSwaggerGen(c =>
         Name = "Authorization",
         BearerFormat = "JWT",
         Scheme = "bearer",
-        Type = SecuritySchemeType.ApiKey
+        Type = SecuritySchemeType.Http
     });
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
