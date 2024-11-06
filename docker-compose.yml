@@ -14,3 +14,16 @@
     build:
       context: .
       dockerfile: OcelotGateway.API/Dockerfile
+
+    
+  weather.api:
+    image: weather.api
+    build:
+      context: .
+      dockerfile: Weather.API/Dockerfile
+
+  share:
+    image: share
+    build:
+      context: .
+      dockerfile: Share/Dockerfile

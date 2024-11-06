@@ -16,6 +16,23 @@
         "GET"
       ],
       "SwaggerKey": "Identity"
+    },
+    {
+      "DownstreamPathTemplate": "/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5208
+        }
+      ],
+      "UpstreamPathTemplate": "/api/{version}/weather/{everything}",
+      "UpstreamHttpMethod": [
+        "POST",
+        "PUT",
+        "GET"
+      ],
+      "SwaggerKey": "Weather"
     }
   ],
   "GlobalConfiguration": {
@@ -30,6 +47,16 @@
           "Version": "v1",
           "Name": "Identity API",
           "Url": "http://localhost:5125/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "Weather",
+      "Config": [
+        {
+          "Version": "v1",
+          "Name": "Weather API",
+          "Url": "http://localhost:5208/swagger/v1/swagger.json"
         }
       ]
     }
