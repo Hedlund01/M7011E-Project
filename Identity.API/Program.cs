@@ -3,6 +3,7 @@ using System.Text;
 using Identity.API.Data;
 using Identity.API.Models;
 using Identity.API.Services;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -79,7 +80,7 @@ builder.Services.AddAuthentication(options => {
 
 builder.Services.AddAuthorization();
 
-
+builder.Services.AddMassTransit(x => { x.UsingInMemory(); });
 
 builder.Services.AddTransient<AuthService>();
 builder.Services.AddTransient<RefreshTokenService>();

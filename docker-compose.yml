@@ -14,8 +14,8 @@
     build:
       context: .
       dockerfile: OcelotGateway.API/Dockerfile
-
-    
+  
+  
   weather.api:
     image: weather.api
     build:
@@ -27,3 +27,15 @@
     build:
       context: .
       dockerfile: Share/Dockerfile
+
+  backgroundservice:
+    image: backgroundservice
+    build:
+      context: .
+      dockerfile: BackgroundService/Dockerfile
+    
+  rabbitmq:
+    ports:
+      - 15672:15672
+      - 5672:5672
+    image: masstransit/rabbitmq

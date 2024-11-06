@@ -3,6 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{18373447-B06B-495A-A4D0-60C621AEA375}"
 	ProjectSection(SolutionItems) = preProject
 		docker-compose.yml = docker-compose.yml
+		compose.rabbitmq.yml = compose.rabbitmq.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{E090864D-D6B5-436F-A2CB-AF461EFE2E2E}"
@@ -14,6 +15,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Weather.API", "Weather.API\Weather.API.csproj", "{09C65272-E0E2-41E0-999F-D19A6293C250}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedLib", "SharedLib\SharedLib.csproj", "{797B8508-32DB-429F-884D-EF5AAD18D278}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackgroundService", "BackgroundService\BackgroundService.csproj", "{EFB7ABA8-6D31-48DE-90B8-B0EDF58266E7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,11 +40,16 @@ Global
 		{797B8508-32DB-429F-884D-EF5AAD18D278}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{797B8508-32DB-429F-884D-EF5AAD18D278}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{797B8508-32DB-429F-884D-EF5AAD18D278}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFB7ABA8-6D31-48DE-90B8-B0EDF58266E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFB7ABA8-6D31-48DE-90B8-B0EDF58266E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFB7ABA8-6D31-48DE-90B8-B0EDF58266E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFB7ABA8-6D31-48DE-90B8-B0EDF58266E7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{1D7717D2-3E5E-45BC-8743-F46F73D68897} = {E090864D-D6B5-436F-A2CB-AF461EFE2E2E}
 		{11165062-97FE-4013-B2EF-D39C2AA9F2DB} = {E090864D-D6B5-436F-A2CB-AF461EFE2E2E}
 		{09C65272-E0E2-41E0-999F-D19A6293C250} = {E090864D-D6B5-436F-A2CB-AF461EFE2E2E}
 		{797B8508-32DB-429F-884D-EF5AAD18D278} = {E090864D-D6B5-436F-A2CB-AF461EFE2E2E}
+		{EFB7ABA8-6D31-48DE-90B8-B0EDF58266E7} = {E090864D-D6B5-436F-A2CB-AF461EFE2E2E}
 	EndGlobalSection
 EndGlobal

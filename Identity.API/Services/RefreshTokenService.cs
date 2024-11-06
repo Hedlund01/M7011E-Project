@@ -13,7 +13,7 @@ public class RefreshTokenService
         _context = context;
     }
 
-    public async void SaveRefreshTokenAsync(RefreshToken? refreshToken)
+    public async Task SaveRefreshTokenAsync(RefreshToken refreshToken)
     {
         await _context.RefreshTokens.AddAsync(refreshToken);
         await _context.SaveChangesAsync();
