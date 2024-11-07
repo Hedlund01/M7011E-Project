@@ -92,7 +92,7 @@ builder.Services.AddMassTransit(x =>
 {
     x.UsingRabbitMq((ctx, cfg) =>
     {
-        cfg.Host("amqps://fpdfbymx:xxIaESqeUtzHkNrsiV6zT6licszNR52x@hog.rmq5.cloudamqp.com/fpdfbymx");
+        cfg.Host(builder.Configuration.GetValue<string>("MQTT:Url"));
         cfg.ConfigureEndpoints(ctx);
     });
 });

@@ -36,7 +36,7 @@ var builder = new HostBuilder()
             x.AddConsumer<EmailVerificationConsumer>();
             x.UsingRabbitMq((ctx, cfg) =>
             {
-                cfg.Host("amqps://fpdfbymx:xxIaESqeUtzHkNrsiV6zT6licszNR52x@hog.rmq5.cloudamqp.com/fpdfbymx");
+                cfg.Host(hostContext.Configuration.GetValue<string>("MQTT:Url"));
                 cfg.ConfigureEndpoints(ctx);
             });
         });
