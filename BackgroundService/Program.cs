@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Security;
+using System.Reflection;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
@@ -22,8 +23,7 @@ var isService = !(Debugger.IsAttached || args.Contains("--console"));
 var builder = new HostBuilder()
     .ConfigureAppConfiguration((hostingContext, config) =>
     {
-        config.SetBasePath(hostingContext.HostingEnvironment.ContentRootPath)
-            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+        config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
         config.AddEnvironmentVariables();
 
         if (args != null)
