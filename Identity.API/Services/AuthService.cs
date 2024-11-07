@@ -10,11 +10,10 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Identity.API.Services;
 
-public class AuthService(IConfiguration configuration, UserManager<IdentityUser> userManager)
+public class AuthService(IConfiguration configuration, UserManager<IdentityUser> userManager, JWTSettings settings)
 {
     public async Task<string> GenerateJwtTokenAsync(string email)
     {
-        var settings = configuration.GetSection("Jwt").Get<JWTSettings>();
         var user = await userManager.FindByEmailAsync(email);
         if (user is null)
         {

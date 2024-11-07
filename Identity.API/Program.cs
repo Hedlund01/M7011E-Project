@@ -101,7 +101,7 @@ var jwtSettings = builder.Configuration.GetSection("Jwt").Get<JWTSettings>();
 
 builder.Services.AddTransient<AuthService>();
 builder.Services.AddTransient<RefreshTokenService>();
-builder.Services.AddSingleton(jwtSettings);
+builder.Services.AddSingleton<JWTSettings>(jwtSettings!);
 
 
 var app = builder.Build();

@@ -7,6 +7,8 @@ using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using BackgroundService.Console.Consumers;
+using BackgroundService.Console.Models;
+using BackgroundService.Console.Services;
 using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,12 +16,14 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
+
 var isService = !(Debugger.IsAttached || args.Contains("--console"));
 
 var builder = new HostBuilder()
     .ConfigureAppConfiguration((hostingContext, config) =>
     {
-        config.AddJsonFile("appsettings.json", optional: true);
+        config.SetBasePath(hostingContext.HostingEnvironment.ContentRootPath)
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
         config.AddEnvironmentVariables();
 
         if (args != null)
@@ -36,6 +40,11 @@ var builder = new HostBuilder()
                 cfg.ConfigureEndpoints(ctx);
             });
         });
+
+        var smtpSettings = hostContext.Configuration.GetSection("SMTP").Get<SmtpSettings>();
+        services.AddSingleton(smtpSettings);
+        services.AddScoped<MailService>();
+
     })
     .ConfigureLogging((hostingContext, logging) =>
     {

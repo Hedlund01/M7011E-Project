@@ -13,6 +13,7 @@ public class RefreshToken
     
     [Required]
     public string UserId { get; set; }
+    
     [Required]
     [ForeignKey(nameof(UserId))]
     public IdentityUser User { get; set; }
