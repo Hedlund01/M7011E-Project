@@ -44,3 +44,9 @@
     build:
       context: .
       dockerfile: BackgroundService.Console/Dockerfile
+
+  catalog.api:
+    image: catalog.api
+    build:
+      context: .
+      dockerfile: Catalog.API/Dockerfile
