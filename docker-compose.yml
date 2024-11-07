@@ -39,3 +39,8 @@
       - 15672:15672
       - 5672:5672
     image: masstransit/rabbitmq
+  backgroundservice.console:
+    image: backgroundservice.console
+    build:
+      context: .
+      dockerfile: BackgroundService.Console/Dockerfile

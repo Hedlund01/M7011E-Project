@@ -7,5 +7,4 @@ public class LoginModel
     [Required]
     public string Password { get; set; }
     
-    public string? TwoFactorCode { get; set; }
 }

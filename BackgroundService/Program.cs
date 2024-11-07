@@ -1,91 +1,53 @@
-using System.Security.Claims;
-using System.Text;
-using BackgroundService.Consumers;
+﻿using System;
+using System.Diagnostics;
+using System.Linq;
+using System.Net;
+using System.Net.Security;
+using System.Security.Authentication;
+using System.Security.Cryptography.X509Certificates;
+using System.Threading.Tasks;
+using BackgroundService.Console.Consumers;
 using MassTransit;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
-var builder = WebApplication.CreateBuilder(args);
+var isService = !(Debugger.IsAttached || args.Contains("--console"));
 
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Identity.API", Version = "v1" });
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+var builder = new HostBuilder()
+    .ConfigureAppConfiguration((hostingContext, config) =>
     {
-        In = ParameterLocation.Header,
-        Description = "Please insert JWT with Bearer into field",
-        Name = "Authorization",
-        BearerFormat = "JWT",
-        Scheme = "bearer",
-        Type = SecuritySchemeType.Http
-    });
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            []
-        }
-    });
-});
+        config.AddJsonFile("appsettings.json", optional: true);
+        config.AddEnvironmentVariables();
 
-// Configure JWT Authentication
-builder.Services.AddAuthentication(options =>
-    {
-        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        if (args != null)
+            config.AddCommandLine(args);
     })
-    .AddJwtBearer(options =>
+    .ConfigureServices((hostContext, services) =>
     {
-        options.TokenValidationParameters = new TokenValidationParameters
+        services.AddMassTransit(x =>
         {
-            ValidateIssuer = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"], // Define this in appsettings.json
-            ValidateAudience = true,
-            ValidAudience = builder.Configuration["Jwt:Audience"], // Define this in appsettings.json
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
-            RoleClaimType = ClaimTypes.Role
-        };
-        options.SaveToken = true;
-    });
-
-builder.Services.AddAuthorization();
-
-builder.Services.AddMassTransit(x =>
-{
-    x.AddConsumer<EmailVerificationConsumer>();
-    x.UsingInMemory((ctx, cfg) =>
+            x.AddConsumer<EmailVerificationConsumer>();
+            x.UsingRabbitMq((ctx, cfg) =>
+            {
+                cfg.Host("amqps://fpdfbymx:xxIaESqeUtzHkNrsiV6zT6licszNR52x@hog.rmq5.cloudamqp.com/fpdfbymx");
+                cfg.ConfigureEndpoints(ctx);
+            });
+        });
+    })
+    .ConfigureLogging((hostingContext, logging) =>
     {
-        cfg.ConfigureEndpoints(ctx);
+        logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
+        logging.AddConsole();
     });
-});
 
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (isService)
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    await builder.Build().RunAsync();
 }
-
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();
+else
+{
+    await builder.RunConsoleAsync();
+}

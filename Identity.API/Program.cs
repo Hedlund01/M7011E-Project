@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Security.Claims;
 using System.Text;
 using Identity.API.Data;
@@ -29,6 +30,7 @@ builder.Services.AddSwaggerGen(c =>
         Scheme = "bearer",
         Type = SecuritySchemeType.Http
     });
+    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -52,7 +54,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(opt =>
 });
 
 
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(opt => { opt.User.RequireUniqueEmail = true; })
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(opt =>
+    {
+        opt.User.RequireUniqueEmail = true;
+        opt.SignIn.RequireConfirmedAccount = true;
+    })
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
@@ -61,7 +67,9 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(opt => { opt.User.Requi
 builder.Services.AddAuthentication(options => {
         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
         options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;})
+        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        
+    })
     .AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
@@ -80,10 +88,20 @@ builder.Services.AddAuthentication(options => {
 
 builder.Services.AddAuthorization();
 
-builder.Services.AddMassTransit(x => { x.UsingInMemory(); });
+builder.Services.AddMassTransit(x =>
+{
+    x.UsingRabbitMq((ctx, cfg) =>
+    {
+        cfg.Host("amqps://fpdfbymx:xxIaESqeUtzHkNrsiV6zT6licszNR52x@hog.rmq5.cloudamqp.com/fpdfbymx");
+        cfg.ConfigureEndpoints(ctx);
+    });
+});
+
+var jwtSettings = builder.Configuration.GetSection("Jwt").Get<JWTSettings>();
 
 builder.Services.AddTransient<AuthService>();
 builder.Services.AddTransient<RefreshTokenService>();
+builder.Services.AddSingleton(jwtSettings);
 
 
 var app = builder.Build();

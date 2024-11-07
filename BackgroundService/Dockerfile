@@ -1,23 +1,21 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+﻿FROM mcr.microsoft.com/dotnet/runtime:8.0 AS base
 USER $APP_UID
 WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["BackgroundService/BackgroundService.csproj", "BackgroundService/"]
-RUN dotnet restore "BackgroundService/BackgroundService.csproj"
+COPY ["BackgroundService.Console/BackgroundService.Console.csproj", "BackgroundService.Console/"]
+RUN dotnet restore "BackgroundService.Console/BackgroundService.Console.csproj"
 COPY . .
-WORKDIR "/src/BackgroundService"
-RUN dotnet build "BackgroundService.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src/BackgroundService.Console"
+RUN dotnet build "BackgroundService.Console.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "BackgroundService.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "BackgroundService.Console.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "BackgroundService.dll"]
+ENTRYPOINT ["dotnet", "BackgroundService.Console.dll"]
