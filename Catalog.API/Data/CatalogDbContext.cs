@@ -3,7 +3,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Catalog.API.Data;
 
-public class CatalogDbContext(DbContextOptions options): DbContext(options)
+public class CatalogDbContext : DbContext
 {
-    private DbSet<Product> Products { get; init; }
+    public CatalogDbContext(DbContextOptions<CatalogDbContext> options) : base(options)
+    {
+    }
+
+    public DbSet<Product> Products { get; set; }
+    public DbSet<Specifications> Specifications { get; set; }
+    public DbSet<Tags> Tags { get; set; }
+    public DbSet<Category> Categories { get; set; }
 }

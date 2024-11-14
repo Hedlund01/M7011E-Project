@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using System.Text;
+using Catalog.API;
 using Catalog.API.Data;
 using Catalog.API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -67,6 +68,12 @@ builder.Services.AddAuthentication(options => {
     });
 
 builder.Services.AddScoped<ProductService>();
+builder.Services.AddScoped<CategoryService>();
+builder.Services.AddScoped<TagsService>();
+builder.Services.AddScoped<SpecificationsService>();
+
+
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 var app = builder.Build();
 

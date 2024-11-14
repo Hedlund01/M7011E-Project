@@ -28,4 +28,31 @@ public class CatalogController: ControllerBase
         return Ok();
     }
     
+    [Authorize]
+    [HttpPut("updateProduct/{productId}")]
+    public async Task<IActionResult> UpdateProduct(int productId, [FromBody] CreateUpdateProductModel model)
+    {
+        await _productService.UpdateProductAsync(productId, model);
+        return Ok();
+    }
+    
+    [Authorize]
+    [HttpDelete("deleteProduct/{productId}")]
+    public async Task<IActionResult> DeleteProduct(string productId)
+    {
+        await _productService.DeleteProductAsync(Guid.Parse(productId));
+        return Ok();
+    }
+    
+    [Authorize]
+    [HttpGet("getProduct/{productId}")]
+    public async Task<IActionResult> GetProduct(string productId)
+    {
+        
+        var product = await _productService.GetProductAsync(Guid.Parse(productId));
+        return Ok(product);
+    }
+    
+    
+
 }
