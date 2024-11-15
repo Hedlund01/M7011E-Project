@@ -1,4 +1,4 @@
-﻿namespace Identity.API.Constants;
+﻿namespace SharedLib.Constants;
 
 public static class Role
 {

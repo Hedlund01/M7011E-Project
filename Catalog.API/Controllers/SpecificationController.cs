@@ -2,6 +2,7 @@
 using Catalog.API.Models;
 using Catalog.API.Services;
 using Microsoft.AspNetCore.Authorization;
+using SharedLib.Constants;
 
 namespace Catalog.API.Controllers;
 
@@ -16,35 +17,92 @@ public class SpecificationsController : ControllerBase
         _specificationsService = specificationsService;
     }
 
-    [Authorize]
+    [Authorize(Roles = $"{Role.Admin},{Role.Employee}")]
     [HttpPost("create")]
-    public async Task<IActionResult> CreateSpecifications([FromBody] CreateUpdateSpecificationModel model)
+    public async Task<ApiResponse<Specifications>> CreateSpecifications([FromBody] CreateUpdateSpecificationModel model)
     {
-        await _specificationsService.CreateSpecificationAsync(model);
-        return Ok();
+        try
+        {
+            var obj = await _specificationsService.CreateSpecificationAsync(model);
+            return new ApiResponse<Specifications> { Success = true, Data = obj};
+        }
+        catch (Exception e)
+        {
+            return new ApiResponse<Specifications>(){ Success = false, Message = "An error has occured" };
+        }
+        
     }
 
-    [Authorize]
+    [Authorize(Roles = $"{Role.Admin},{Role.Employee}")]
     [HttpPut("update/{id}")]
-    public async Task<IActionResult> UpdateSpecifications(Guid id, [FromBody] CreateUpdateSpecificationModel model)
+    public async Task<ApiResponse> UpdateSpecifications(Guid id, [FromBody] CreateUpdateSpecificationModel model)
     {
-        await _specificationsService.UpdateSpecificationAsync(id, model);
-        return Ok();
+        try
+        {
+            await _specificationsService.UpdateSpecificationAsync(id, model);
+            return new ApiResponse { Success = true };
+        }
+        catch (Exception e)
+        {
+            return new ApiResponse(){ Success = false, Message = "An error has occured" };
+        }
+        
     }
 
-    [Authorize]
+    [Authorize(Roles = Role.Admin)]
     [HttpDelete("delete/{id}")]
-    public async Task<IActionResult> DeleteSpecifications(Guid id)
+    public async Task<ApiResponse> DeleteSpecifications(Guid id)
     {
-        await _specificationsService.DeleteSpecificationAsync(id);
-        return Ok();
+        try
+        {
+            await _specificationsService.DeleteSpecificationAsync(id);
+            return new ApiResponse { Success = true };
+        }
+        catch (Exception e)
+        {
+            return new ApiResponse(){ Success = false, Message = "An error has occured" };
+        }
+        
     }
 
-    [Authorize]
     [HttpGet("get/{id}")]
-    public async Task<IActionResult> GetSpecifications(Guid id)
+    public async Task<ApiResponse<Specifications>> GetSpecifications(Guid id)
     {
-        var specifications = await _specificationsService.GetSpecificationAsync(id);
-        return Ok(specifications);
+        try
+        {
+            var specifications = await _specificationsService.GetSpecificationAsync(id);
+            return new ApiResponse<Specifications> { Success = true, Data= specifications };
+        }
+        catch (Exception e)
+        {
+            return new ApiResponse<Specifications>(){ Success = false, Message = "An error has occured" };
+        }
+        
+    }
+    
+    [HttpGet("get")]
+    public async Task<ApiResponse<PaginatedList<Specifications>>> GetSpecifications(int pageIndex, int pageSize)
+    {
+        try
+        {
+            var list = await _specificationsService.GetSpecificationsAsync(pageIndex, pageSize);
+
+            if (list.Count <= 0)
+            {
+                return new ApiResponse<PaginatedList<Specifications>> { Success = false, Message = "No objects found" };
+            }
+            var paginated = new PaginatedList<Specifications>
+            {
+                Items = list,
+                PageIndex = pageIndex,
+                TotalPages = (int)Math.Ceiling(list.Count / (double)pageSize)
+            };
+            return new ApiResponse<PaginatedList<Specifications>> { Success = true, Data = paginated };
+        }
+        catch (Exception e)
+        {
+            return new ApiResponse<PaginatedList<Specifications>>(){ Success = false, Message = "An error has occured" };
+        }
+        
     }
 }

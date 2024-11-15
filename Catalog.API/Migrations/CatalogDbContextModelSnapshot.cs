@@ -33,7 +33,7 @@ namespace Catalog.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("Catalog.API.Models.Product", b =>
@@ -65,7 +65,7 @@ namespace Catalog.API.Migrations
 
                     b.HasIndex("SpecificationId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("Catalog.API.Models.Specifications", b =>
@@ -84,7 +84,7 @@ namespace Catalog.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Specifications");
+                    b.ToTable("Specifications", (string)null);
                 });
 
             modelBuilder.Entity("Catalog.API.Models.Tags", b =>
@@ -99,7 +99,7 @@ namespace Catalog.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tags");
+                    b.ToTable("Tags", (string)null);
                 });
 
             modelBuilder.Entity("ProductTags", b =>
@@ -114,7 +114,7 @@ namespace Catalog.API.Migrations
 
                     b.HasIndex("TagsId");
 
-                    b.ToTable("ProductTags");
+                    b.ToTable("ProductTags", (string)null);
                 });
 
             modelBuilder.Entity("Catalog.API.Models.Product", b =>

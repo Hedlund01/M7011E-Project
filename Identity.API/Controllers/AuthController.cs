@@ -1,10 +1,10 @@
-﻿using Identity.API.Constants;
-using Identity.API.Models;
+﻿using Identity.API.Models;
 using Identity.API.Services;
 using MassTransit;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using SharedLib.Constants;
 using SharedLib.Models.DTOs;
 
 namespace Identity.API.Controllers;

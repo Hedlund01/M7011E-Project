@@ -27,7 +27,7 @@ public class Product
     
     public Specifications Specification { get; set; }
 
-
+  
     public ICollection<Tags> Tags { get; init; } 
 
 

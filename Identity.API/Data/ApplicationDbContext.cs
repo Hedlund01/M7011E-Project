@@ -1,8 +1,8 @@
-﻿using Identity.API.Constants;
-using Identity.API.Models;
+﻿using Identity.API.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using SharedLib.Constants;
 
 namespace Identity.API.Data;
 

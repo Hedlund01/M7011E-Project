@@ -14,13 +14,14 @@ public class TagsService
         
     }
 
-    public async Task CreateTagAsync(CreateUpdateTagModel model)
+    public async Task<Tags> CreateTagAsync(CreateUpdateTagModel model)
     {
-        await _catalogDbContext.AddAsync<Tags>(new ()
+        var obj = await _catalogDbContext.AddAsync<Tags>(new ()
         {
             Name = model.Name
         }) ;
         await _catalogDbContext.SaveChangesAsync();
+        return obj.Entity;
     }
     
     public async Task UpdateTagAsync(Guid id, CreateUpdateTagModel model)
@@ -52,5 +53,10 @@ public class TagsService
     public async Task<Tags?> GetTagAsync(Guid id)
     {
         return await _catalogDbContext.FindAsync<Tags>(id);
+    }
+    
+    public async Task<List<Tags>> GetTagsAsync(int pageIndex, int pageSize)
+    {
+        return await _catalogDbContext.Tags.Skip(pageIndex * pageSize).Take(pageSize).ToListAsync();
     }
 }

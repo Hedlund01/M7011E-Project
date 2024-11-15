@@ -12,5 +12,4 @@ public class Category
     [Required]
     public string Description { get; set; }
 
-    public ICollection<Product> Products { get; } = new List<Product>();
 }

@@ -11,21 +11,11 @@
       </jdbc-additional-properties>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
-    <data-source source="LOCAL" name="Catalog" uuid="68f00120-bdcd-4a9d-b44e-27a5a008924c">
+    <data-source source="LOCAL" name="Catalog" uuid="da67fb81-50e7-435e-b760-d4bf8e5fc94d">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:C:\Users\ogge5\Desktop\D7067E\M7011E-Project\Catalog.API\Catalog.db</jdbc-url>
-      <jdbc-additional-properties>
-        <property name="com.intellij.clouds.kubernetes.db.enabled" value="false" />
-      </jdbc-additional-properties>
-      <working-dir>$ProjectFileDir$</working-dir>
-    </data-source>
-    <data-source source="LOCAL" name="Identity [2]" uuid="f06db6dc-f672-4752-9dee-c68511b81b60">
-      <driver-ref>sqlite.xerial</driver-ref>
-      <synchronize>true</synchronize>
-      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:C:\Users\ogge5\Desktop\D7067E\M7011E-Project\Identity.API\Identity.db</jdbc-url>
+      <jdbc-url>jdbc:sqlite:C:\Users\hedlund01\RiderProjects\M7011E-Project\Catalog.API\Catalog.db</jdbc-url>
       <jdbc-additional-properties>
         <property name="com.intellij.clouds.kubernetes.db.enabled" value="false" />
       </jdbc-additional-properties>

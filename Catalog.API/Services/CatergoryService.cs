@@ -16,11 +16,12 @@ public class CategoryService
         _mapper = mapper;
     }
 
-    public async Task CreateCategoryAsync(CreateUpdateCategoryModel model)
+    public async Task<Category> CreateCategoryAsync(CreateUpdateCategoryModel model)
     {
-        var tag = _mapper.Map<Category>(model);
-        await _catalogDbContext.AddAsync(tag);
+        var data = _mapper.Map<Category>(model);
+        var obj = await _catalogDbContext.AddAsync(data);
         await _catalogDbContext.SaveChangesAsync();
+        return obj.Entity;
     }
     
     
@@ -55,4 +56,10 @@ public class CategoryService
     {
         return await _catalogDbContext.FindAsync<Category>(id);
     }
+    
+    public async Task<List<Category>> GetCategoriesAsync(int pageIndex, int pageSize)
+    {
+        return await _catalogDbContext.Categories.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
+    }
+
 }

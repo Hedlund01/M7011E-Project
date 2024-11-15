@@ -2,6 +2,7 @@
 using Catalog.API.Models;
 using Catalog.API.Services;
 using Microsoft.AspNetCore.Authorization;
+using SharedLib.Constants;
 
 namespace Catalog.API.Controllers;
 
@@ -16,35 +17,91 @@ public class TagsController : ControllerBase
         _tagsService = tagsService;
     }
 
-    [Authorize]
+    [Authorize(Roles = $"{Role.Admin},{Role.Employee}")]
     [HttpPost("create")]
-    public async Task<IActionResult> CreateTag([FromBody] CreateUpdateTagModel model)
+    public async Task<ApiResponse<Tags>> CreateTag([FromBody] CreateUpdateTagModel model)
     {
-        await _tagsService.CreateTagAsync(model);
-        return Ok();
+        try
+        {
+            var tag = await _tagsService.CreateTagAsync(model);
+            return new ApiResponse<Tags> { Success = true, Data = tag };
+        }
+        catch (Exception e)
+        {
+            return new ApiResponse<Tags> { Success = false, Message = "An error has occured" };
+        }
     }
 
-    [Authorize]
+    [Authorize(Roles = $"{Role.Admin},{Role.Employee}")]
     [HttpPut("update/{id}")]
-    public async Task<IActionResult> UpdateTag(Guid id, [FromBody] CreateUpdateTagModel model)
+    public async Task<ApiResponse> UpdateTag(Guid id, [FromBody] CreateUpdateTagModel model)
     {
-        await _tagsService.UpdateTagAsync(id, model);
-        return Ok();
+        try
+        {
+            await _tagsService.UpdateTagAsync(id, model);
+            return new ApiResponse() { Success = true };
+        }
+        catch (Exception e)
+        {
+            return new ApiResponse() { Success = false, Message = "An error has occured" };
+        }
+        
     }
 
-    [Authorize]
+    [Authorize(Roles = Role.Admin)]
     [HttpDelete("delete/{id}")]
-    public async Task<IActionResult> DeleteTag(Guid id)
+    public async Task<ApiResponse> DeleteTag(Guid id)
     {
-        await _tagsService.DeleteTagAsync(id);
-        return Ok();
+        try
+        {
+            await _tagsService.DeleteTagAsync(id);   
+            return new ApiResponse() { Success = true };
+        }catch (Exception e)
+        {
+            return new ApiResponse(){ Success = false, Message = "An error has occured" };
+        }
+        
     }
 
-    [Authorize]
     [HttpGet("get/{id}")]
-    public async Task<IActionResult> GetTag(Guid id)
+    public async Task<ApiResponse> GetTag(Guid id)
     {
-        var tag = await _tagsService.GetTagAsync(id);
-        return Ok(tag);
+        try
+        {
+            var tag = await _tagsService.GetTagAsync(id);
+            return new ApiResponse<Tags> { Success = true , Data = tag };
+        }
+        catch (Exception e)
+        {
+            return new ApiResponse<Tags>{ Success = false, Message = "An error has occured" };
+        }
+        
+        
+    }
+
+    [HttpGet("get")]
+    public async Task<ApiResponse<PaginatedList<Tags>>> GetTags(int pageIndex, int pageSize)
+    {
+        try
+        {
+            var tags = await _tagsService.GetTagsAsync(pageIndex, pageSize);
+
+            if (tags.Count <= 0)
+            {
+                return new ApiResponse<PaginatedList<Tags>> { Success = false, Message = "No objects found" };
+            } 
+            var paginatedTags = new PaginatedList<Tags>
+            {
+                Items = tags,
+                PageIndex = pageIndex,
+                TotalPages = (int)Math.Ceiling(tags.Count / (double)pageSize)
+            };
+            return new ApiResponse<PaginatedList<Tags>> { Success = true, Data = paginatedTags };
+        }
+        catch (Exception e)
+        {
+            return new ApiResponse<PaginatedList<Tags>> { Success = false, Message = "An error has occured" };
+        }
+        
     }
 }

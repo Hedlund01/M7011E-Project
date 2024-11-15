@@ -16,16 +16,17 @@ public class ProductService
         _mapper = mapper;
     }
 
-    public async Task CreateProductAsync(CreateUpdateProductModel model)
+    public async Task<Product> CreateProductAsync(CreateUpdateProductModel model)
     {
         var product = _mapper.Map<Product>(model);
-        await _catalogDbContext.AddAsync(product);
+        var obj = await _catalogDbContext.AddAsync(product);
         await _catalogDbContext.SaveChangesAsync();
+        return obj.Entity;
     }
     
     public async Task CreateProductFullAsync(CreateFullProductModel model)
     {
-        List<Guid> tags = [];
+        List<Tags> tags = [];
         foreach (var tag in model.Tags)
         {
             var result = await _catalogDbContext.AddAsync(new Tags()
@@ -33,7 +34,7 @@ public class ProductService
                 Name = tag.Name
             });
             
-            tags.Add(result.Entity.Id);
+            tags.Add(result.Entity);
         }
 
         var cat = await _catalogDbContext.AddAsync(new Category()
@@ -50,8 +51,12 @@ public class ProductService
 
         await _catalogDbContext.AddAsync(new Product()
         {
-            CategoryId = cat.Entity.Id,
-            SpecificationId = spec.Entity.Id,
+            Description = model.Description,
+            Tags = tags,
+            Name = model.Name,
+            Price = model.Price,
+            Category = cat.Entity,
+            Specification = spec.Entity
 
         });
         await _catalogDbContext.SaveChangesAsync();
@@ -88,5 +93,10 @@ public class ProductService
     public async Task<Product?> GetProductAsync(Guid id)
     {
         return await _catalogDbContext.FindAsync<Product>(id);
+    }
+    
+    public async Task<List<Product>> GetProductsAsync(int pageIndex, int pageSize)
+    {
+        return await _catalogDbContext.Products.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
     }
 }
