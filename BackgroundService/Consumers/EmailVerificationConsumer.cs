@@ -5,7 +5,7 @@ using SharedLib.Models.DTOs;
 
 namespace BackgroundService.Console.Consumers;
 
-public class EmailVerificationConsumer(ILogger<EmailVerificationConsumer> logger, MailService mailService)
+public class EmailVerificationConsumer(ILogger<EmailVerificationConsumer> logger, IMailService mailService)
     : IConsumer<TwoFactorEmail>, IConsumer<EmailVerification>
 {
 

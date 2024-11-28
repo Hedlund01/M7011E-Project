@@ -6,7 +6,7 @@ using MailKit.Security;
 
 namespace BackgroundService.Console.Services;
 
-public class MailService
+public class MailService : IMailService
 {
     private readonly SmtpSettings _smtpSettings;
     public MailService(SmtpSettings smtpSettings)
