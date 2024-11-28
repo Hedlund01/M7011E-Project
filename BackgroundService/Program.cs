@@ -36,10 +36,16 @@ var builder = new HostBuilder()
             x.AddConsumer<EmailVerificationConsumer>();
             x.UsingRabbitMq((ctx, cfg) =>
             {
-                cfg.Host(hostContext.Configuration.GetValue<string>("MQTT:Url"));
+                cfg.Host(hostContext.Configuration.GetValue<string>("MQTT:Url") ?? "localhost", hostContext.Configuration.GetValue<string>("MQTT:VirtualHost") ?? "/",h =>
+                {
+                    h.Username(hostContext.Configuration.GetValue<string>("MQTT:Username") ?? "guest");
+                    h.Password(hostContext.Configuration.GetValue<string>("MQTT:Password") ?? "guest");
+                });
                 cfg.ConfigureEndpoints(ctx);
             });
         });
+        
+
 
         var smtpSettings = hostContext.Configuration.GetSection("SMTP").Get<SmtpSettings>();
         services.AddSingleton(smtpSettings);

@@ -92,7 +92,11 @@ builder.Services.AddMassTransit(x =>
 {
     x.UsingRabbitMq((ctx, cfg) =>
     {
-        cfg.Host(builder.Configuration.GetValue<string>("MQTT:Url"));
+        cfg.Host(builder.Configuration.GetValue<string>("MQTT:Url") ?? "localhost", builder.Configuration.GetValue<string>("MQTT:VirtualHost") ?? "/",h =>
+        {
+            h.Username(builder.Configuration.GetValue<string>("MQTT:Username") ?? "guest");
+            h.Password(builder.Configuration.GetValue<string>("MQTT:Password") ?? "guest");
+        });
         cfg.ConfigureEndpoints(ctx);
     });
 });

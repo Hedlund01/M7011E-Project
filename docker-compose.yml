@@ -1,11 +1,35 @@
 ﻿services:
+  rabbitmq:
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    image: masstransit/rabbitmq
+    
+  backgroundservice:
+    image: backgroundservice
+    depends_on:
+      - rabbitmq
+    build:
+      context: .
+      dockerfile: BackgroundService/Dockerfile
+      
   identity.api:
     image: identity.api
     ports:
-      - "5000:8080"
+      - "8081:8081"
     build:
       context: .
       dockerfile: Identity.API/Dockerfile
+    depends_on:
+      - rabbitmq
+
+  catalog.api:
+    image: catalog.api
+    ports:
+      - "8082:8082"
+    build:
+      context: .
+      dockerfile: Catalog.API/Dockerfile
 
   ocelotgateway.api:
     image: ocelotgateway.api
@@ -14,39 +38,6 @@
     build:
       context: .
       dockerfile: OcelotGateway.API/Dockerfile
-  
-  
-  weather.api:
-    image: weather.api
-    build:
-      context: .
-      dockerfile: Weather.API/Dockerfile
-
-  share:
-    image: share
-    build:
-      context: .
-      dockerfile: Share/Dockerfile
-
-  backgroundservice:
-    image: backgroundservice
-    build:
-      context: .
-      dockerfile: BackgroundService/Dockerfile
-    
-  rabbitmq:
-    ports:
-      - 15672:15672
-      - 5672:5672
-    image: masstransit/rabbitmq
-  backgroundservice.console:
-    image: backgroundservice.console
-    build:
-      context: .
-      dockerfile: BackgroundService.Console/Dockerfile
-
-  catalog.api:
-    image: catalog.api
-    build:
-      context: .
-      dockerfile: Catalog.API/Dockerfile
+    depends_on: 
+      - identity.api
+      - catalog.api
