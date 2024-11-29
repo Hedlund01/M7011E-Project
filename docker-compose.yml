@@ -4,32 +4,71 @@
       - "15672:15672"
       - "5672:5672"
     image: masstransit/rabbitmq
-    
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:15672" ]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+
   backgroundservice:
     image: backgroundservice
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
     build:
       context: .
       dockerfile: BackgroundService/Dockerfile
-      
+    environment:
+      - DisableEmails=true
+
+  identity.db:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+      SA_PASSWORD: "YourStrong@Passw0rd"
+      ACCEPT_EULA: "Y"
+    volumes:
+      - identity_db:/var/opt/mssql:rw
+
   identity.api:
     image: identity.api
     ports:
-      - "8081:8081"
+      - "8081:8080"
     build:
       context: .
       dockerfile: Identity.API/Dockerfile
     depends_on:
       - rabbitmq
+      - identity.db
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=identity.db;Database=Identity.API;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=True;
+
+
+  catalog.db:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+      SA_PASSWORD: "YourStrong@Passw0rd"
+      ACCEPT_EULA: "Y"
+    volumes:
+      - catalog_db:/var/opt/mssql:rw
+
 
   catalog.api:
     image: catalog.api
     ports:
-      - "8082:8082"
+      - "8082:8080"
     build:
       context: .
       dockerfile: Catalog.API/Dockerfile
+    depends_on:
+      - rabbitmq
+      - catalog.db
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=catalog.db;Database=Catalog.API;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=True;
+
 
   ocelotgateway.api:
     image: ocelotgateway.api
@@ -38,6 +77,13 @@
     build:
       context: .
       dockerfile: OcelotGateway.API/Dockerfile
-    depends_on: 
+    depends_on:
       - identity.api
       - catalog.api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+
+volumes:
+  rabbitmq_data: {}
+  identity_db: {}
+  catalog_db: {}

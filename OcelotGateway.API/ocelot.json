@@ -6,7 +6,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "identity.api",
-          "Port": 5125
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/{version}/identity/{everything}",
@@ -22,17 +22,17 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5208
+          "Host": "catalog.api",
+          "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/api/{version}/weather/{everything}",
+      "UpstreamPathTemplate": "/api/{version}/catalog/{everything}",
       "UpstreamHttpMethod": [
         "POST",
         "PUT",
         "GET"
       ],
-      "SwaggerKey": "Weather"
+      "SwaggerKey": "Catalog"
     }
   ],
   "GlobalConfiguration": {
@@ -46,17 +46,17 @@
         {
           "Version": "v1",
           "Name": "Identity API",
-          "Url": "http://localhost:5125/swagger/v1/swagger.json"
+          "Url": "http://identity.api:8080/swagger/v1/swagger.json"
         }
       ]
     },
     {
-      "Key": "Weather",
+      "Key": "Catalog",
       "Config": [
         {
           "Version": "v1",
-          "Name": "Weather API",
-          "Url": "http://localhost:5208/swagger/v1/swagger.json"
+          "Name": "Catalog API",
+          "Url": "http://catalog.api:8080/swagger/v1/swagger.json"
         }
       ]
     }

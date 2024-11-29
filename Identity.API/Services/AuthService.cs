@@ -3,6 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using Identity.API.Data;
 using Identity.API.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -10,7 +11,7 @@ using SharedLib.Constants;
 
 namespace Identity.API.Services;
 
-public class AuthService(IConfiguration configuration, UserManager<IdentityUser> userManager, JWTSettings settings)
+public class AuthService(IConfiguration configuration, UserManager<ApplicationUser> userManager, JWTSettings settings)
 {
     public async Task<string> GenerateJwtTokenAsync(string email)
     {
@@ -28,9 +29,9 @@ public class AuthService(IConfiguration configuration, UserManager<IdentityUser>
         
         var claims = new []
         {
-            new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+            new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim(ClaimTypes.NameIdentifier, user.Id),
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Email, user.Email),
             new Claim(ClaimTypes.Role, roles.FirstOrDefault(Role.User))
         };

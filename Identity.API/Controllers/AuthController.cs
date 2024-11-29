@@ -1,4 +1,5 @@
-﻿using Identity.API.Models;
+﻿using Identity.API.Data;
+using Identity.API.Models;
 using Identity.API.Services;
 using MassTransit;
 using Microsoft.AspNetCore.Authorization;
@@ -16,7 +17,7 @@ namespace Identity.API.Controllers;
 [Route("[controller]")]
 public class AuthController : ControllerBase
 {
-    private readonly UserManager<IdentityUser> _userManager;
+    private readonly UserManager<ApplicationUser> _userManager;
     private readonly AuthService _authService;
     private readonly JWTSettings _jwtSettings;
     private readonly RefreshTokenService _refreshTokenService;
@@ -32,7 +33,7 @@ public class AuthController : ControllerBase
     /// <param name="publishEndpoint">The publish endpoint for messaging.</param>
     /// <param name="logger">The logger instance.</param>
     /// <param name="jwtSettings">The JWT settings.</param>
-    public AuthController(UserManager<IdentityUser> userManager, AuthService authService,
+    public AuthController(UserManager<ApplicationUser> userManager, AuthService authService,
         RefreshTokenService refreshTokenService,
         IPublishEndpoint publishEndpoint, ILogger<AuthController> logger,
         JWTSettings jwtSettings
@@ -123,7 +124,7 @@ public class AuthController : ControllerBase
             ExpirationDate = DateTime.Now.AddDays(_jwtSettings.RefreshTokenExpirationDays)
         };
 
-        _refreshTokenService.SaveRefreshTokenAsync(rt);
+        await _refreshTokenService.SaveRefreshTokenAsync(rt);
 
         return Ok(new TokenRequest { AccessToken = accessToken, RefreshToken = refreshToken });
     }
@@ -136,7 +137,7 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterModel model)
     {
-        var user = new IdentityUser { Email = model.Email, UserName = model.Email };
+        var user = new ApplicationUser() { Email = model.Email, UserName = model.Email };
         var result = await _userManager.CreateAsync(user, model.Password);
         if (!result.Succeeded)
             return BadRequest(result.Errors);

@@ -10,7 +10,7 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
+builder.Configuration.AddEnvironmentVariables();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -43,7 +43,7 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddDbContext<CatalogDbContext>(x =>
 {
-    x.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
+    x.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
     
     
@@ -76,6 +76,17 @@ builder.Services.AddScoped<SpecificationsService>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 var app = builder.Build();
+
+// Apply migrations at startup
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<CatalogDbContext>();
+    var pendingMigrations = db.Database.GetPendingMigrations();
+    if (pendingMigrations.Any())
+    {
+        db.Database.Migrate();
+    }
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

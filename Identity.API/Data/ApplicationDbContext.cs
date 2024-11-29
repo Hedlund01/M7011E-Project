@@ -7,19 +7,35 @@ using SharedLib.Constants;
 namespace Identity.API.Data;
 
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-    : IdentityDbContext<IdentityUser>(options)
+    : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>(options)
 {
     public DbSet<RefreshToken> RefreshTokens { get; set; }
-
-    protected override void OnModelCreating(ModelBuilder builder)
+    
+    public async Task SeedRolesAsync(RoleManager<ApplicationRole> roleManager)
     {
-        base.OnModelCreating(builder);
-        builder.Entity<IdentityRole>().HasData(
-            new { Id = "1", Name = Role.Admin, NormalizedName = Role.Admin.ToUpper() },
-            new { Id = "2", Name = Role.Employee, NormalizedName = Role.Employee.ToUpper() },
-            new { Id = "3", Name = Role.User, NormalizedName = Role.User.ToUpper() }
-            );
-  
+        if (!await roleManager.RoleExistsAsync(Role.Admin))
+        {
+            await roleManager.CreateAsync(new ApplicationRole { Name = Role.Admin, NormalizedName = Role.Admin.ToUpper() });
+        }
+        if (!await roleManager.RoleExistsAsync(Role.Employee))
+        {
+            await roleManager.CreateAsync(new ApplicationRole { Name = Role.Employee, NormalizedName = Role.Employee.ToUpper() });
+        }
+        if (!await roleManager.RoleExistsAsync(Role.User))
+        {
+            await roleManager.CreateAsync(new ApplicationRole { Name = Role.User, NormalizedName = Role.User.ToUpper() });
+        }
+    }
+    
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<RefreshToken>()
+            .HasOne(rt => rt.User)
+            .WithMany()
+            .HasForeignKey(rt => rt.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
     

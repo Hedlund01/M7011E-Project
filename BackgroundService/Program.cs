@@ -49,7 +49,7 @@ var builder = new HostBuilder()
 
         var smtpSettings = hostContext.Configuration.GetSection("SMTP").Get<SmtpSettings>();
         services.AddSingleton(smtpSettings);
-        services.AddScoped<MailService>();
+        services.AddSingleton<IMailService, MailService>();
 
     })
     .ConfigureLogging((hostingContext, logging) =>

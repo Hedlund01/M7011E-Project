@@ -14,7 +14,7 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
+builder.Configuration.AddEnvironmentVariables();
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
@@ -30,7 +30,7 @@ builder.Services.AddSwaggerGen(c =>
         Scheme = "bearer",
         Type = SecuritySchemeType.Http
     });
-    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
+    // c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -50,16 +50,16 @@ builder.Services.AddSwaggerGen(c =>
 //Database
 builder.Services.AddDbContext<ApplicationDbContext>(opt =>
 {
-    opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
+    opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
 
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(opt =>
+builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(opt =>
     {
         opt.User.RequireUniqueEmail = true;
         opt.SignIn.RequireConfirmedAccount = true;
     })
-    .AddRoles<IdentityRole>()
+    .AddRoles<ApplicationRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
@@ -109,6 +109,20 @@ builder.Services.AddSingleton<JWTSettings>(jwtSettings!);
 
 
 var app = builder.Build();
+
+// Apply migrations at startup
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    var pendingMigrations = db.Database.GetPendingMigrations();
+    if (pendingMigrations.Any())
+    {
+        db.Database.Migrate();
+    }
+    await db.SeedRolesAsync(roleManager);
+}
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
