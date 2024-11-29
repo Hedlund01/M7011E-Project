@@ -24,7 +24,7 @@ public class ProductService
         return obj.Entity;
     }
     
-    public async Task CreateProductFullAsync(CreateFullProductModel model)
+    public async Task<Product> CreateProductFullAsync(CreateFullProductModel model)
     {
         List<Tags> tags = [];
         foreach (var tag in model.Tags)
@@ -49,7 +49,7 @@ public class ProductService
             Width = model.Specification.Width
         });
 
-        await _catalogDbContext.AddAsync(new Product()
+        var obj = await _catalogDbContext.AddAsync(new Product()
         {
             Description = model.Description,
             Tags = tags,
@@ -60,6 +60,8 @@ public class ProductService
 
         });
         await _catalogDbContext.SaveChangesAsync();
+
+        return obj.Entity;
     }
     
     public async Task UpdateProductAsync(int productId, CreateUpdateProductModel updatedProduct)

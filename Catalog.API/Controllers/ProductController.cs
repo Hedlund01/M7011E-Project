@@ -42,7 +42,7 @@ public class ProductController: ControllerBase
     {
         try
         {
-            await _productService.CreateProductFullAsync(model);
+            var obj = await _productService.CreateProductFullAsync(model);
             return new ApiResponse() { Success = true };
         }
         catch (Exception e)
